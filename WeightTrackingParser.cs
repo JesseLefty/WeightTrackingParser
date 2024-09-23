@@ -24,16 +24,19 @@ namespace WeightTrackingParser
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("This is the start of the project");
 
-            List<double> weight = new List<double>()
+            List<string> weight = new List<string>()
             {
-                156.2, 162.8, 155.5
+                "156.2", "162.8", "155.5", null, "162.8"
             };
 
             List<string> date = new List<string>()
             {
-                "11/5/2021", "5/8/2019", "9/23/2020"
+                "11/5/2021", "5/8/2019", "9/23/2020", "7/11/2016", "1/26/2024"
+            };
+            List<string> time = new List<string>()
+            {
+                "6:45", "5:45", "6:15", "6:25", null
             };
 
             List<DayData> list = new List<DayData>();
@@ -44,7 +47,8 @@ namespace WeightTrackingParser
 
                 DayData day = new DayData();
                 day.Date = date[i];
-                day.Weight = weight[i];
+                day.Weight = Convert.ToDouble(weight[i]);
+                day.Time = time[i];
                 list.Add(day);
             }
 
@@ -54,10 +58,13 @@ namespace WeightTrackingParser
             List<string> datemax = ReturnDateAtWeight(list, maximum);
             foreach (string dates in datemax)
             {
-                Console.WriteLine(dates);
+                Console.Write($"{dates} ");
             }
 
-
+            List<string> emptyDates = new List<string>();
+            Console.WriteLine();
+            Console.WriteLine(ReturnUnweighedDaysCount(list, out emptyDates));
+            emptyDates.ForEach(x => Console.Write($"{x} "));
             Console.ReadLine();
         }
         static double ReturnMaxWeight(List<DayData> list)
@@ -90,6 +97,21 @@ namespace WeightTrackingParser
 
             return tempList;
         }
+        static int ReturnUnweighedDaysCount(List<DayData> list, out List<string> emptyDates)
+        {
+            int total = 0;
+            emptyDates = new List<string>();
+            foreach (var item in list)
+            {
+                if (item.Weight == 0 || string.IsNullOrEmpty(item.Time))
+                {
+                    total++;
+                    emptyDates.Add(item.Date);
+                }
+            }
+            return total;
+        }
+       
     }
 
     struct DayData
