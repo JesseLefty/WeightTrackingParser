@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using System.Globalization;
 
 /*
  * This script should do the following
@@ -65,8 +67,126 @@ namespace WeightTrackingParser
             Console.WriteLine();
             Console.WriteLine(ReturnUnweighedDaysCount(list, out emptyDates));
             emptyDates.ForEach(x => Console.Write($"{x} "));
+            Console.WriteLine();
+            List<DayData> filteredList = FilterByDateRange(list, "1/1/2019", "12/31/2020");
+            foreach (DayData day in filteredList)
+            {
+                Console.WriteLine($"{day.Weight}\t{day.Date}\t{day.Time}");
+            }
+            Console.WriteLine();
+            List<DayData> filteredList2 = FilterByMonth(list,9);
+            foreach (DayData day in filteredList2)
+            {
+                Console.WriteLine($"{day.Weight}\t{day.Date}\t{day.Time}");
+            }
+            Console.WriteLine();
+            List<DayData> filteredList3 = FilterByMonth(list, "November");
+            if ( filteredList3 != null )
+            {
+
+                foreach (DayData day in filteredList3)
+                {
+                    Console.WriteLine($"{day.Weight}\t{day.Date}\t{day.Time}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"The month you were searching for contains no data");
+            }
+            Console.WriteLine();
+            List<DayData> filteredList4 = FilterByYear(list, 2020);
+            foreach (DayData day in filteredList4)
+            {
+                Console.WriteLine($"{day.Weight}\t{day.Date}\t{day.Time}");
+            }
+            Console.WriteLine();
+
             Console.ReadLine();
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        static List<DayData> FilterByYear(List<DayData> list, int year)
+        {
+            List<DayData> filteredList = new List<DayData>();
+
+            foreach (var item in list)
+            {
+                DateOnly date = DateOnly.Parse(item.Date);
+                if (date.Year == year)
+                {
+                    filteredList.Add(item);
+                }
+            }
+
+            return filteredList;
+        }
+        static List<DayData> FilterByMonth(List<DayData> list, int monthNum)
+        {
+            List<DayData> filteredList = new List<DayData>();
+
+            foreach (var item in list)
+            {
+                DateOnly date = DateOnly.Parse(item.Date);
+                if (date.Month == monthNum)
+                {
+                    filteredList.Add(item);
+                }
+            }
+
+            return filteredList;
+        }
+        static List<DayData> FilterByMonth(List<DayData> list, string monthStr)
+        {
+            Dictionary<string, int> months = new Dictionary<string, int>()
+            {
+                {"january", 01},
+                {"febuary", 02},
+                {"march", 03},
+                {"april", 04},
+                {"may", 05},
+                {"june", 06},
+                {"july", 07},
+                {"august", 08},
+                {"september", 09},
+                {"october", 10},
+                {"november", 11},
+                {"december", 12},
+
+            };
+            int month = months[monthStr.ToLower()];
+            List<DayData> filteredList = FilterByMonth(list, month);
+
+            return filteredList;
+        }
+        static List<DayData> FilterByDateRange(List<DayData> list, string startDate, string endDate)
+        {
+            List<DayData> filteredList = new List<DayData>();
+            DateOnly start = DateOnly.Parse(startDate);
+            DateOnly end = DateOnly.Parse(endDate);
+            foreach (var item in list)
+            {
+                if (DateOnly.Parse(item.Date) >= start && DateOnly.Parse(item.Date) <= end)
+                {
+                    filteredList.Add(item);
+                }
+            }
+            return filteredList;
+        }
+        
         static double ReturnMaxWeight(List<DayData> list)
         {
             /**
