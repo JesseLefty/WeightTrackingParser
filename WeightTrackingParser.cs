@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Globalization;
+using System.ComponentModel.DataAnnotations.Schema;
 
 /*
  * This script should do the following
@@ -100,6 +101,11 @@ namespace WeightTrackingParser
                 Console.WriteLine($"{day.Weight}\t{day.Date}\t{day.Time}");
             }
             Console.WriteLine();
+            List<double> average = ReturnAverageBlocks(list, 2);
+            foreach (double value in average)
+            {
+                Console.WriteLine(value);
+            }
 
             Console.ReadLine();
         }
@@ -230,6 +236,34 @@ namespace WeightTrackingParser
                 }
             }
             return total;
+        }
+        static List<double> ReturnAverageBlocks(List<DayData> list, int blocksize)
+        {
+            
+            List<double> averageList = new List<double>();
+            List<double> weightList = new List<double>();
+            double weight = 0;
+            for (int i = 0; i < list.Count; i = i + blocksize)
+            {
+                var blockList = list.Skip(i).Take(blocksize);
+                foreach (var item in blockList)
+                {
+                    weightList.Add(item.Weight);
+                }
+                averageList.Add(weightList.Where(w => w != 0).Average());
+            }
+
+            return averageList;
+        }
+        static double ReturnAverage(List<DayData> list)
+        {
+            List<double> averageList = new List<double>();
+            foreach (var item in list)
+            {
+                averageList.Add(item.Weight);
+            }
+            return averageList.Average();
+
         }
        
     }
