@@ -54,7 +54,6 @@ namespace WeightTrackingParser
                 day.Time = time[i];
                 list.Add(day);
             }
-
             double maximum = ReturnMaxWeight(list); 
             Console.WriteLine(maximum);
 
@@ -105,6 +104,14 @@ namespace WeightTrackingParser
             foreach (double value in average)
             {
                 Console.WriteLine(value);
+            }
+            double minWeight = ReturnMinWeight(list);
+            List<string> minWeightDates = ReturnDateAtWeight(list, minWeight);
+            Console.WriteLine($"Minimum weight = {minWeight}");
+            Console.Write($"On date(s)");
+            foreach (string day in minWeightDates)
+            {
+                Console.Write($"{day} ");
             }
 
             Console.ReadLine();
@@ -201,13 +208,21 @@ namespace WeightTrackingParser
              * 
              * 
              **/
-
             var tempList = new List<double>();
             foreach (var item in list)
             {
                 tempList.Add(item.Weight);
             }
             return tempList.Max();
+        }
+        static double ReturnMinWeight(List<DayData> list)
+        {
+            var tempList = new List<double>();
+            foreach(var item in list)
+            {
+                tempList.Add(item.Weight);
+            }
+            return tempList.Where(w => w != 0).Min();
         }
         static List<string> ReturnDateAtWeight(List<DayData> list, double weight)
         {
@@ -242,7 +257,6 @@ namespace WeightTrackingParser
             
             List<double> averageList = new List<double>();
             List<double> weightList = new List<double>();
-            double weight = 0;
             for (int i = 0; i < list.Count; i = i + blocksize)
             {
                 var blockList = list.Skip(i).Take(blocksize);
