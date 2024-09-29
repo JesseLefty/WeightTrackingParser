@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations.Schema;
 using static WeightTrackingParser.WeightParsingMethods;
+using System.Reflection.PortableExecutable;
 
 /*
  * This script should do the following
@@ -28,33 +29,12 @@ namespace WeightTrackingParser
     {
         static void Main(string[] args)
         {
-           
-            List<string> weight = new List<string>()
-            {
-                "156.2", "162.8", "155.5", null, "162.8"
-            };
-
-            List<string> date = new List<string>()
-            {
-                "11/5/2021", "5/8/2019", "9/23/2020", "7/11/2016", "1/26/2024"
-            };
-            List<string> time = new List<string>()
-            {
-                "6:45", "5:45", "6:15", "6:25", null
-            };
-
-            List<DayData> list = new List<DayData>();
-
-            for (int i = 0; i < weight.Count; i++)
-            {
-                // do something about empty cell values
-
-                DayData day = new DayData();
-                day.Date = date[i];
-                day.Weight = Convert.ToDouble(weight[i]);
-                day.Time = time[i];
-                list.Add(day);
-            }
+            FileStream file = new FileStream("../../../WeightData.csv", FileMode.Open);
+            csvToList csvList = new csvToList();
+            csvList.File = file;
+            List<DayData> list = csvList.importCSV();
+            
+            
             double maximum = ReturnMaxWeight(list); 
             Console.WriteLine(maximum);
 
@@ -114,6 +94,7 @@ namespace WeightTrackingParser
             {
                 Console.Write($"{day} ");
             }
+
 
             Console.ReadLine();
         }     
