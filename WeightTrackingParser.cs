@@ -29,39 +29,42 @@ namespace WeightTrackingParser
     {
         static void Main(string[] args)
         {
+            // import the CSV data and add it to new list
+
             FileStream file = new FileStream("../../../WeightData.csv", FileMode.Open);
             csvToList csvList = new csvToList();
             csvList.File = file;
-            List<DayData> list = csvList.importCSV();
+            List<DayData> weightList = csvList.importCSV();
             
             
-            double maximum = ReturnMaxWeight(list); 
-            Console.WriteLine(maximum);
+            double maximum = ReturnMaxWeight(weightList); 
+            Console.Write($"Maximum weight = {maximum} lbs on dates: ");
 
-            List<string> datemax = ReturnDateAtWeight(list, maximum);
+            List<string> datemax = ReturnDateAtWeight(weightList, maximum);
             foreach (string dates in datemax)
             {
                 Console.Write($"{dates} ");
             }
 
+            Console.WriteLine();
             List<string> emptyDates = new List<string>();
+            Console.WriteLine($"Total days without weights = {ReturnUnweighedDaysCount(weightList, out emptyDates)}");
+            //emptyDates.ForEach(x => Console.Write($"{x} "));
             Console.WriteLine();
-            Console.WriteLine(ReturnUnweighedDaysCount(list, out emptyDates));
-            emptyDates.ForEach(x => Console.Write($"{x} "));
-            Console.WriteLine();
-            List<DayData> filteredList = FilterByDateRange(list, "1/1/2019", "12/31/2020");
+
+            List<DayData> filteredList = FilterByDateRange(weightList, "1/1/2020", "12/31/2020");
             foreach (DayData day in filteredList)
             {
                 Console.WriteLine($"{day.Weight}\t{day.Date}\t{day.Time}");
             }
             Console.WriteLine();
-            List<DayData> filteredList2 = FilterByMonth(list,9);
+            List<DayData> filteredList2 = FilterByMonth(weightList,9);
             foreach (DayData day in filteredList2)
             {
                 Console.WriteLine($"{day.Weight}\t{day.Date}\t{day.Time}");
             }
             Console.WriteLine();
-            List<DayData> filteredList3 = FilterByMonth(list, "November");
+            List<DayData> filteredList3 = FilterByMonth(weightList, "November");
             if ( filteredList3 != null )
             {
 
@@ -75,19 +78,19 @@ namespace WeightTrackingParser
                 Console.WriteLine($"The month you were searching for contains no data");
             }
             Console.WriteLine();
-            List<DayData> filteredList4 = FilterByYear(list, 2020);
+            List<DayData> filteredList4 = FilterByYear(weightList, 2016);
             foreach (DayData day in filteredList4)
             {
                 Console.WriteLine($"{day.Weight}\t{day.Date}\t{day.Time}");
             }
             Console.WriteLine();
-            List<double> average = ReturnAverageBlocks(list, 2);
+            List<double> average = ReturnAverageBlocks(weightList, 365);
             foreach (double value in average)
             {
                 Console.WriteLine(value);
             }
-            double minWeight = ReturnMinWeight(list);
-            List<string> minWeightDates = ReturnDateAtWeight(list, minWeight);
+            double minWeight = ReturnMinWeight(weightList);
+            List<string> minWeightDates = ReturnDateAtWeight(weightList, minWeight);
             Console.WriteLine($"Minimum weight = {minWeight}");
             Console.Write($"On date(s)");
             foreach (string day in minWeightDates)
