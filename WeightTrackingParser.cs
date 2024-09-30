@@ -84,10 +84,12 @@ namespace WeightTrackingParser
                 Console.WriteLine($"{day.Weight}\t{day.Date}\t{day.Time}");
             }
             Console.WriteLine();
-            List<double> average = ReturnAverageBlocks(weightList, 365);
-            foreach (double value in average)
+            List<List<DayData>> dataBlock = ReturnDataBlocks(weightList, 180);
+            foreach (List<DayData> value in dataBlock)
             {
-                Console.WriteLine(value);
+                string startDate = value.First().Date;
+                string endDate = value.Last().Date;
+                Console.WriteLine($"Min = {ReturnMinWeight(value)}, Average = {double.Round(ReturnAverage(value), 2)}, Max = {ReturnMaxWeight(value)} between {startDate} and {endDate}");
             }
             double minWeight = ReturnMinWeight(weightList);
             List<string> minWeightDates = ReturnDateAtWeight(weightList, minWeight);

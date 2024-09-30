@@ -128,19 +128,16 @@ namespace WeightTrackingParser
             }
             return total;
         }
-        public static List<double> ReturnAverageBlocks(List<DayData> list, int blocksize)
+        public static List<List<DayData>> ReturnDataBlocks(List<DayData> list, int blocksize)
         {
 
-            List<double> averageList = new List<double>();
-            List<double> weightList = new List<double>();
+            List<List<DayData>> averageList = new List<List<DayData>>();
+            List<DayData> blockList = new List<DayData>();
             for (int i = 0; i < list.Count; i = i + blocksize)
             {
-                var blockList = list.Skip(i).Take(blocksize);
-                foreach (var item in blockList)
-                {
-                    weightList.Add(item.Weight);
-                }
-                averageList.Add(weightList.Where(w => w != 0).Average());
+                blockList = list.Skip(i).Take(blocksize).ToList();
+
+                averageList.Add(blockList);
             }
 
             return averageList;
